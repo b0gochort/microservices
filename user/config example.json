@@ -1,0 +1,13 @@
+{
+  "db": {
+    "host": "postgres-container1",
+    "port": 5432,
+    "username": "postgres",
+    "password": "password1",
+    "dbname": "database1",
+    "sslmode": "disable"
+  },
+
+  "port":":8081"
+  
+}
