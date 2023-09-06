@@ -1,0 +1,18 @@
+{
+    "service":{
+        "userservice":{
+            "hostname": "userservice",
+            "port" : "8081"
+        },
+        "carservice":{
+            "hostname": "carservice",
+            "port" : "8082"
+        },
+        "engineservice":{
+            "hostname": "engineservice",
+            "port" : "8083"
+        }
+        
+    },
+    "port" : ":8084"
+}
