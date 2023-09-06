@@ -1,0 +1,2 @@
+# Ignore config.json in all services
+**/config.json

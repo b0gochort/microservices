@@ -1,0 +1,98 @@
+version: '3'
+services:
+  postgres-container1:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: password1
+      POSTGRES_DB: database1
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init-scripts/db1:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "localhost", "-p", "5432", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  postgres-container2:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: password2
+      POSTGRES_DB: database2
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./init-scripts/db2:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "localhost", "-p", "5433"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  postgres-container3:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: password3
+      POSTGRES_DB: database3
+    ports:
+      - "5434:5432"
+    volumes:
+      - ./init-scripts/db3:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "localhost", "-p", "5434"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  userservice:
+    build:
+      context: ./user
+      dockerfile: build/package/Dockerfile
+    depends_on:
+      - postgres-container1
+    hostname: localhost
+    ports:
+      - "8081:8081"
+    healthcheck:
+      test: curl -f http://localhost:8081/health || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  carservice:
+    build:
+      context: ./cars
+      dockerfile: build/package/Dockerfile
+    depends_on:
+      - postgres-container2
+    hostname: localhost
+    ports:
+      - "8082:8082"
+    healthcheck:
+      test: curl -f http://localhost:8082/health || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  engineservice:
+    build:
+      context: ./engines
+      dockerfile: build/package/Dockerfile
+    depends_on:
+      - postgres-container3
+    hostname: localhost
+    ports:
+      - "8083:8083"
+    healthcheck:
+      test: curl -f http://localhost:8083/health || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: build/package/Dockerfile
+    hostname: localhost
+    ports:
+      - "8084:8084"
+    healthcheck:
+      test: curl -f http://localhost:8084/health || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
